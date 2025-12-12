@@ -53,7 +53,7 @@ Ele permite criar e gerenciar infraestrutura (servidores, bancos de dados, etc) 
     Esse comando gera automaticamente:
 
     - `terraform-provider-<PROVEDOR_DE_CLOUD>_v<VERSAO_PROVIDER>` Arquivo de configuração do provider: 
-    - `.terraform.lock.hcl` (Dependency Lock): Com esse arquivo, o Terraform vai saber se você fez alguma alteração na versão do proviser ou se adicionou algum provider novo.
+    - `.terraform.lock.hcl` (Dependency Lock): Com esse arquivo, o Terraform vai saber se você fez alguma alteração na versão do provider ou se adicionou algum provider novo.
 
 3. Formatar o código automaticamente
     
@@ -86,7 +86,7 @@ Após isso,
     Expõe um plano do que o terraform pretende fazer no terminal, sem fazer qualquer alteração.
     E nesse caso, ele pretende criar um recurso de `aws_s3_bucket` com as configurações listadas.
 
-    > Extra: `terraform plan -out <NOME_DO_ARQUIVO>.out` para salvar o plan dentro de um arquivo. Isto gera um arquivo binário, que pode ser visto através do comando `terraform show <NOME_DO_ARQUIVO>.out`.
+    > Extra: `terraform plan -out <NOME_DO_ARQUIVO>.out` para salvar o plano de ação dentro de um arquivo. Isto gera um arquivo binário, que pode ser visto através do comando `terraform show <NOME_DO_ARQUIVO>.out`.
 
 2. Para construir
     ```bash
