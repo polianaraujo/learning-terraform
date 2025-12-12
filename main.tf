@@ -1,23 +1,28 @@
 # Configurações do terraform
 # Versão do terraform, versão de providers, backends, etc
 terraform {
-    required_version = "~> 1.13.5" # 1.13.5 até 1.0.n
+  required_version = "~> 1.14.0" # 1.14.0 até 1.14.n
 
-    required_providers {
-      aws = {
-        version = "6.19.0"
-        source = "hashicorp/aws"
-      }
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+      version = "6.19.0"
     }
-
-    backend "s3" {
-      
-    }
+  }
 }
 
 
 # Definir Configurações para determinados providers que estamos criando infraestrutura
-# provider "aws" { }
+provider "aws" {
+  region = "us-east-1"
+
+  default_tags {
+    tags = {
+      owner = "polianaraujo"
+      managed-by = "terraform"
+    }
+  }
+}
 
 
 # bloco de recurso que cria e gerencia uma bucket na aws
