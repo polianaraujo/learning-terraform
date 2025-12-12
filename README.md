@@ -49,3 +49,51 @@ Ele permite criar e gerenciar infraestrutura (servidores, bancos de dados, etc) 
     terraform init
     ```
     ![tf_init](https://github.com/polianaraujo/learning-terraform/blob/main/images/tf_init.png)
+
+    Esse comando gera automaticamente:
+
+    - `terraform-provider-<PROVEDOR_DE_CLOUD>_v<VERSAO_PROVIDER>` Arquivo de configuração do provider: 
+    - `.terraform.lock.hcl` (Dependency Lock): Com esse arquivo, o Terraform vai saber se você fez alguma alteração na versão do proviser ou se adicionou algum provider novo.
+
+3. Formatar o código automaticamente
+    
+    Este comando (b) formata o código automaticamente para melhor legibilidade.
+
+    Antes de executar o comando (b), o comando (a) vai listar quais arquivos é necessário fazer uma mudança.
+
+    Já o comando (c), executa a formatação ao mesmo tempo que mostra o que foi alterado pelo terminal.
+
+    ```bash
+    terraform fmt -check    # (a)
+    
+    terraform fmt           # (b)
+
+    terraform fmt -diff     # (c)
+    ```
+
+4. Validação do código
+    Este comando vai verificar se o código é válido ou não.
+
+    ```bash
+    terraform validate
+    ```
+
+### Após isso, executar as credenciais `AWS_ACCESS_KEY_ID` e `AWS_SECRET_ACCESS_KEY` no terminal no formato do arquivo para o seu sistema (Windows, Linux, etc).
+
+Após isso,
+
+1. `terraform plan`
+    Expõe um plano do que o terraform pretende fazer no terminal, sem fazer qualquer alteração.
+    E nesse caso, ele pretende criar um recurso de `aws_s3_bucket` com as configurações listadas.
+
+    > Extra: `terraform plan -out <NOME_DO_ARQUIVO>.out` para salvar o plan dentro de um arquivo. Isto gera um arquivo binário, que pode ser visto através do comando `terraform show <NOME_DO_ARQUIVO>.out`.
+
+2. Para construir
+    ```bash
+    terraform apply
+    ```
+
+    Para executar o `apply` novamente, é necessário executar `terraform apply -destroy`.
+
+    Outro comando é o `terraform apply -auto-approve`: ele mostra o plano e o executa, sem perguntar para confirmar se você quer que seja ou não executado.
+
