@@ -1,6 +1,6 @@
 # Aprendendo Terraform
 
-Este repositório tem o objetivo de auxiliar nos estudos da ferramenta desenvolvida mais famosa pela HashiCorp de IaC, o Terraform.
+Este repositório tem o objetivo de auxiliar nos estudos da ferramenta mais famosa desenvolvida pela HashiCorp de IaC, o Terraform.
 
 Ele permite criar e gerenciar infraestrutura (servidores, bancos de dados, etc) usando código (IaC). Em vez de clicar manualmente no console AWS, basta escrever um arquivo de configuração e o Terraform consegue criar tudo.
 
