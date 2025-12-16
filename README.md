@@ -115,12 +115,32 @@ Após isso,
     - `terraform.tfstate`: 
     - `terraform.tfstate.backup`: A última versão antes da presente em `terraform.tfstate`.
 
+### `locals.tf` e `variables.tf`
 
-3. Output
-    - Serve para pegarmos alguma informação produzida pelo código do Terraform, e serve para nós colocarmos para fora do código para ser usado em outro momento.
-    
-    Resumindo, é para expor informações sobre a infraestrutura na linha de comando, no Terraform do HCP e em outras configurações do Terraform.
+- `locals.tf`
+    Serve para definir valores locais (valores temporários ou auxiliares), auxiliando na reutilização de código. São calculados internamente dentro do código, diferentemente de `variables.tf` que aceitam valores externos.
 
-    Pode ser usado na linha de comando por algum outro programa ou pode ser usado por algum outro código do Terraform, ou opde ser usado em módulos.
+    Como o bloco `locals` serve para guardar diferentes valores locais, então, para chamar algum deles em outro código utiliza-se `local.name`, `local.tags`, etc.
+
+- `variables.tf`
+    Aceitam valores externos (do usuário ou de outro módulo)
+
+#### Diferença entre os dois
+
+|Característica|`locals.tf`|`variables.tf`|
+|-|-|-|
+|Origem|São calculados dentro do módulo|Vêm de fora do módulo (usuário, CLI, arquivo.tfvars)|
+|Flexibilidade|O usuário não pode alterar diretamente*, é lógico interna fixa|O usuário pode alterar o valor ao rodar o `plan`|
+|Analogia|Variáveis declaradas dentro da função|Parâmetros de uma função|
+
+* "Alterar diretamente" significa passar um valor de fora para dentro no momento em que você roda o comando.
+    Com `variables` pode rodar `terraform apply -var="ambiente-prod"`, e o Terraform irá aceitar esse valor externo e o injeta na variável.
+    Com `locals` não é possível, pois não existe um comando como `terraform apply -local="nome=joao"`. O valor do `local` está trancado dentro da lógica do seu script.
 
 
+### Outputs
+Serve para pegarmos alguma informação produzida pelo código do Terraform, e serve para nós colocarmos para fora do código para ser usado em outro momento.
+
+Resumindo, é para expor informações sobre a infraestrutura na linha de comando, no Terraform do HCP e em outras configurações do Terraform.
+
+Pode ser usado na linha de comando por algum outro programa ou pode ser usado por algum outro código do Terraform, ou opde ser usado em módulos.
