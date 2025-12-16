@@ -123,12 +123,17 @@ Após isso,
     Como o bloco `locals` serve para guardar diferentes valores locais, então, para chamar algum deles em outro código utiliza-se `local.name`, `local.tags`, etc.
 
 - `variables.tf`
-    Aceitam valores externos (do usuário ou de outro módulo)
+    Permite customizar a infraestrutura sem alterar o código fonte, aceitando valores externos (do usuário ou de outro módulo).
+    - Definem o tipo de dado esperado (string, number, bool...)
+    - Definindo a variável como `default`, ela se torna opcional. Portanto, se não for `default`, o Terraform vai pedir um valor na execução para essa variável.
+
+    Chamada: `var.name`, `var.enviroment`, etc.
 
 #### Diferença entre os dois
 
 |Característica|`locals.tf`|`variables.tf`|
 |-|-|-|
+|Conceito|Lógica interna/Processamento|Interface Pública/Entrada de dados|
 |Origem|São calculados dentro do módulo|Vêm de fora do módulo (usuário, CLI, arquivo.tfvars)|
 |Flexibilidade|O usuário não pode alterar diretamente*, é lógico interna fixa|O usuário pode alterar o valor ao rodar o `plan`|
 |Analogia|Variáveis declaradas dentro da função|Parâmetros de uma função|
