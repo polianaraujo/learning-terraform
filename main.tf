@@ -5,7 +5,7 @@ terraform {
 
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "6.19.0"
     }
   }
@@ -14,11 +14,11 @@ terraform {
 
 # Definir Configurações para determinados providers que estamos criando infraestrutura
 provider "aws" {
-  region = "us-east-1"
+  region = var.region
 
   default_tags {
     tags = {
-      owner = "polianaraujo"
+      owner      = "polianaraujo"
       managed-by = "terraform"
     }
   }
@@ -41,7 +41,7 @@ provider "aws" {
 
 
 # output "name" {
-    # nao pode ter dois outputs com o mesmo nome e mesmo código }
+# nao pode ter dois outputs com o mesmo nome e mesmo código }
 
 
 # locals { }
