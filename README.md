@@ -82,18 +82,45 @@ Ele permite criar e gerenciar infraestrutura (servidores, bancos de dados, etc) 
 
 Após isso,
 
-1. `terraform plan`
+1. Plano
+    ```bash
+    `terraform plan`
+    ```
+
     Expõe um plano do que o terraform pretende fazer no terminal, sem fazer qualquer alteração.
     E nesse caso, ele pretende criar um recurso de `aws_s3_bucket` com as configurações listadas.
 
     > Extra: `terraform plan -out <NOME_DO_ARQUIVO>.out` para salvar o plano de ação dentro de um arquivo. Isto gera um arquivo binário, que pode ser visto através do comando `terraform show <NOME_DO_ARQUIVO>.out`.
 
+    Para criar um plano de destruição de configuração,
+
+    ```bash
+    # Criar o plano de destruição
+    `terraform plan -out plan.out -destroy`
+
+    # Executar plano de destruição
+    `terraform apply plan.out`
+    ```
+
 2. Para construir
     ```bash
-    terraform apply
+    `terraform apply`
     ```
 
     Para executar o `apply` novamente, é necessário executar `terraform apply -destroy`.
 
-    Outro comando é o `terraform apply -auto-approve`: ele mostra o plano e o executa, sem perguntar para confirmar se você quer que seja ou não executado.
+    Outro comando é o `terraform apply -auto-approve`: ele mostra o plano e o executa, sem perguntar para confirmar se você quer que seja ou não executado. (Não recomendado)
+
+- Após o primeiro `apply`, é criado o arquivo:
+    - `terraform.tfstate`: 
+    - `terraform.tfstate.backup`: A última versão antes da presente em `terraform.tfstate`.
+
+
+3. Output
+    - Serve para pegarmos alguma informação produzida pelo código do Terraform, e serve para nós colocarmos para fora do código para ser usado em outro momento.
+    
+    Resumindo, é para expor informações sobre a infraestrutura na linha de comando, no Terraform do HCP e em outras configurações do Terraform.
+
+    Pode ser usado na linha de comando por algum outro programa ou pode ser usado por algum outro código do Terraform, ou opde ser usado em módulos.
+
 
