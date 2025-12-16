@@ -143,6 +143,18 @@ Após isso,
     Com `locals` não é possível, pois não existe um comando como `terraform apply -local="nome=joao"`. O valor do `local` está trancado dentro da lógica do seu script.
 
 
+#### Existe uma ordem de precedência para definir nomes
+
+1. `variables.tf`
+2. Criar e executar variável no terminal. `export <nome-da-variavel-que-quer-alterar-valor>=<valor>`
+3. `terraform.tfvars`
+4. `variables.auto.tfvars`
+5. Definir variável no terminal no momento de executar o `terraform plan -out plan.out -var <nome-variavel>="<valor>"`.
+6. Criar um arquivo (exemplo: `var`) e executar no terminal: `terraform plan -out plan.out -var <nome-variavel>="<valor> -var-file=var"`.
+    ```
+    container_name = "container-var-file-cli"
+    ```
+
 ### Outputs
 Serve para pegarmos alguma informação produzida pelo código do Terraform, e serve para nós colocarmos para fora do código para ser usado em outro momento.
 
