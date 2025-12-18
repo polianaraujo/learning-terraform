@@ -196,7 +196,7 @@ Possui uma lista de subcomandos:
 
 - `terraform state list`: Lista quais recursos estão no state.
 - `terraform state mv <nome_antigo_do_recurso> <nome_novo_do_recurso>`: Atualizar nome de recursos, sem destruir e criar um novo (sem precisar fazer `plan`).
-- `terraform state push`
+- `terraform refresh`: Atualiza o estado local com o que existe na nuvem (útil se alguém mudou algo manualmente no console da AWS/Azure).
 
 
 ## Bloco `removed{}`
@@ -236,3 +236,6 @@ resource "aws_instance" "example" {
   }
 }
 ```
+
+### Criação de VM com provisioners
+
