@@ -34,7 +34,7 @@ Ele permite criar e gerenciar infraestrutura (servidores, bancos de dados, etc) 
 - `main.tf`: 
 - `bucket.tf`:
 
-### Após configurar os dois arquivos mínimos, chegou a hora de usar os comandos para executar o Terraform
+## Após configurar os dois arquivos mínimos, chegou a hora de usar os comandos para executar o Terraform
 
 1. Providers
     Indica quais são os providers que estão mencionados no código e que serão necessários para que o código rode corretamente.
@@ -44,7 +44,7 @@ Ele permite criar e gerenciar infraestrutura (servidores, bancos de dados, etc) 
     ```
 
 2. Init
-    É obrigatório fazer toda vez que voê está usando uma configuração em um diretório pela primeira vez, ou quando faz alguma alteração no provider ou no módulo.
+    É obrigatório fazer toda vez que você está usando uma configuração em um diretório pela primeira vez, ou quando faz alguma alteração no provider ou no módulo.
     ```bash
     terraform init
     ```
@@ -78,7 +78,7 @@ Ele permite criar e gerenciar infraestrutura (servidores, bancos de dados, etc) 
     terraform validate
     ```
 
-### Após isso, executar as credenciais `AWS_ACCESS_KEY_ID` e `AWS_SECRET_ACCESS_KEY` no terminal no formato do arquivo para o seu sistema (Windows, Linux, etc).
+## Após isso, executar as credenciais `AWS_ACCESS_KEY_ID` e `AWS_SECRET_ACCESS_KEY` no terminal no formato do arquivo para o seu sistema (Windows, Linux, etc).
 
 Após isso,
 
@@ -112,10 +112,10 @@ Após isso,
     Outro comando é o `terraform apply -auto-approve`: ele mostra o plano e o executa, sem perguntar para confirmar se você quer que seja ou não executado. (Não recomendado)
 
 - Após o primeiro `apply`, é criado o arquivo:
-    - `terraform.tfstate`: 
+    - `terraform.tfstate`: Mapeamento de todos os recursos definidos no código para os objetos reais que existem na nuvem utilizada.
     - `terraform.tfstate.backup`: A última versão antes da presente em `terraform.tfstate`.
 
-### `locals.tf` e `variables.tf`
+## `locals.tf` e `variables.tf`
 
 - `locals.tf`
     Serve para definir valores locais (valores temporários ou auxiliares), auxiliando na reutilização de código. São calculados internamente dentro do código, diferentemente de `variables.tf` que aceitam valores externos.
@@ -129,7 +129,7 @@ Após isso,
 
     Chamada: `var.name`, `var.enviroment`, etc.
 
-#### Diferença entre os dois
+### Diferença entre os dois
 
 |Característica|`locals.tf`|`variables.tf`|
 |-|-|-|
@@ -143,7 +143,7 @@ Após isso,
     Com `locals` não é possível, pois não existe um comando como `terraform apply -local="nome=joao"`. O valor do `local` está trancado dentro da lógica do seu script.
 
 
-#### Existe uma ordem de precedência para definir nomes
+### Existe uma ordem de precedência para definir nomes
 
 1. `variables.tf`
 2. Criar e executar variável no terminal. `export <nome-da-variavel-que-quer-alterar-valor>=<valor>`
@@ -155,9 +155,84 @@ Após isso,
     container_name = "container-var-file-cli"
     ```
 
-### Outputs
+## Outputs
 Serve para pegarmos alguma informação produzida pelo código do Terraform, e serve para nós colocarmos para fora do código para ser usado em outro momento.
 
 Resumindo, é para expor informações sobre a infraestrutura na linha de comando, no Terraform do HCP e em outras configurações do Terraform.
 
 Pode ser usado na linha de comando por algum outro programa ou pode ser usado por algum outro código do Terraform, ou opde ser usado em módulos.
+
+## Remote State
+
+Já foi mencionado que o `.tfstate` gerado é apenas local e gera somente o bucket do último state antes do atual. Então, isso é funciona bem para projetos pessoais.
+
+Essa situação em projetos colaborativos não funcionaria muito bem, pois cada usuário precisa garantir que tenha os dados de estado mais recente antes de executar o Terraform e que ninguém mais o execute simultaneamente.
+
+Por isso, seria interessante ter um histórico armazenado remotamente dos diferentes states já realizados, e é por isso que existe o Remote State:
+
+- **Colaboração em equipe:** Toda a equipe consegue consultar as versões que estarão armazenadas no Backend Remoto.
+
+- **State locking:** Impede execuções simultâneas no mesmo estado, travando o arquivo enquanto uma pessoa estiver manipulando.
+
+- **Segurança e dados sensíveis:** Diferente do `.tfstate` local, no remoto é possível gerenciar permissões de cacsso, criptografia e versionamento.
+
+- **Isolamento e referência entre projetos:** `terraform_remote_state` permite que um projeto Terraform leia saídas (outputs) de outro projeto.
+
+### Criar uma VPC (Virtual Private Cloud) na AWS com Remote State
+
+- VPC (Infraestrutura): É um datacenter virtual dentro da AWS, permitindo criar uma rede isolada logicamente, onde se tem controle total sobre o ambiente, desde o endereçamento IP até as regras de segurança. É a rede virtual onde você lança os recursos AWS de forma isolada e segura.
+
+- Remote State (Gestão): Ao usar Terraform para criar a VPC, é gerado o arquivo `.tfstate`, e usar o Remote State significa armazenar esse arquivo em um serviço como a S3.
+
+## Remote State Data Source
+
+Serve para acessar um Remote State de um outro código do Terraform, só que ele não acesso o state por completo, apenas os outputs.
+
+## Comandos `terraform show / state`
+
+### `terraform state`
+
+Possui uma lista de subcomandos:
+
+- `terraform state list`: Lista quais recursos estão no state.
+- `terraform state mv <nome_antigo_do_recurso> <nome_novo_do_recurso>`: Atualizar nome de recursos, sem destruir e criar um novo (sem precisar fazer `plan`).
+- `terraform state push`
+
+
+## Bloco `removed{}`
+
+Serve para remover um recurso, e pra usá-lo é necessário apagar o recurso definido no código.
+
+O `lifecycle{}`, no exemplo abaixo, serve para impedir a destruição do recurso aws_s3_bucket.bucket_3, apagando somente o controle dele do state do Terraform. Com isso, o recurso continua existindo na nuvem, mas o Terraform deixa de gerenciá-lo.
+
+```tf
+resource "aws_s3_bucket" "bucket_3" {
+    bucket = "poliana_bucket"
+}
+
+removed {
+    from = aws_s3_bucket.bucket_3
+
+    lifecycle {
+        destroy = false
+    }
+}
+```
+
+
+## Provisioners
+
+São usados para automação de tarefas pós-criação ou pré-destruição de recursos, mas seu uso deve ser limitado, pois o ideal é que a infraestrutura seja totalmente declarativa.
+
+```tf
+resource "aws_instance" "example" {
+  # ...configuração...
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get update",
+      "sudo apt-get install -y nginx"
+    ]
+  }
+}
+```
